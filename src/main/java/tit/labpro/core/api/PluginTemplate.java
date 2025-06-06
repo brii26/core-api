@@ -1,7 +1,9 @@
 package tit.labpro.core.api;
 
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -15,22 +17,50 @@ public abstract class PluginTemplate extends StackPane {
     private final int RESIZE_MARGIN = 10;
 
     private final Button finishResizeBtn;
+    private final StackPane contentWrapper = new StackPane(); 
 
     public PluginTemplate() {
-        setStyle("-fx-border-color: darkslategray; -fx-border-width: 3; -fx-background-color: linear-gradient(to bottom, #f0f4f7, #d9e2ec);");
+        // Outer green border wrapper
+        BorderPane outerWrapper = new BorderPane();
 
-        finishResizeBtn = new Button("Confirm");
+        contentWrapper.setStyle(
+            "-fx-border-width: 3; " +
+            "-fx-background-color: linear-gradient(to bottom, #f0f4f7, #d9e2ec);" +
+            "-fx-border-radius: 8; " +
+            "-fx-background-radius: 8;"
+        );
+
+        outerWrapper.setCenter(contentWrapper);
+
+        // Confirm button
+        finishResizeBtn = new Button("V");
+        finishResizeBtn.setStyle(
+            "-fx-background-color: limegreen; " +
+            "-fx-text-fill: white; " +
+            "-fx-font-weight: bold; " +
+            "-fx-background-radius: 10;"
+        );
         finishResizeBtn.setOnAction(e -> {
             disableResizeAndDrag();
             finishResizeBtn.setVisible(false);
             onResizeFinished();
         });
         finishResizeBtn.setVisible(false);
-        getChildren().add(finishResizeBtn);
-        StackPane.setAlignment(finishResizeBtn, Pos.BOTTOM_CENTER);
-        finishResizeBtn.setTranslateY(-10);
+
+        // Place button top-right inside outer wrapper
+        BorderPane topRightPane = new BorderPane();
+        topRightPane.setRight(finishResizeBtn);
+        topRightPane.setPickOnBounds(false);
+        outerWrapper.setTop(topRightPane);
+
+        getChildren().add(outerWrapper);
 
         setupMouseEvents();
+    }
+
+
+    public void setContent(Node node) {
+        contentWrapper.getChildren().setAll(node);
     }
 
     private void setupMouseEvents() {
@@ -103,10 +133,10 @@ public abstract class PluginTemplate extends StackPane {
     public void enableResizeAndDrag() {
         resizableEnabled = true;
         finishResizeBtn.setVisible(true);
-        setStyle("-fx-border-color: darkslategray; -fx-border-width: 3; -fx-background-color: linear-gradient(to bottom, #f0f4f7, #d9e2ec);");
+        setStyle("-fx-border-color: #8AA9F9; -fx-border-width: 3; -fx-background-color: linear-gradient(to bottom, #f0f4f7, #d9e2ec);");
     }
 
     protected void onResizeFinished() {
-        // OVERRIDde
+        // Optional override
     }
 }
