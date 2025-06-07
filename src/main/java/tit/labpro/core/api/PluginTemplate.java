@@ -2,9 +2,7 @@ package tit.labpro.core.api;
 
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.input.MouseEvent;import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,8 +20,8 @@ public abstract class PluginTemplate extends StackPane {
     private final StackPane contentWrapper = new StackPane(); 
 
     public PluginTemplate() {
+        resizableEnabled = false;
 
-        // Plugin pane
         setStyle("-fx-background-color: transparent;");
         contentWrapper.setStyle(
             "-fx-border-width: 3; " +
@@ -38,11 +36,10 @@ public abstract class PluginTemplate extends StackPane {
             clip.setHeight(bounds.getHeight());
         });
 
-        // Check button
         finishResizeBtn = new Button("V");
         finishResizeBtn.setFocusTraversable(false);
         finishResizeBtn.setMouseTransparent(false);
-        finishResizeBtn.setVisible(true);
+        finishResizeBtn.setVisible(false);
 
         finishResizeBtn.setStyle(
             "-fx-background-color: limegreen; " +
@@ -57,12 +54,21 @@ public abstract class PluginTemplate extends StackPane {
             onResizeFinished();
         });
 
+        setOnMouseClicked(e -> {
+            if (!resizableEnabled) {
+                enableResizeAndDrag();
+            }
+            e.consume();
+        });
+
         StackPane.setAlignment(finishResizeBtn, Pos.TOP_RIGHT);
         StackPane.setMargin(finishResizeBtn, new Insets(5));
-
         getChildren().addAll(contentWrapper, finishResizeBtn);
+
         setupMouseEvents();
     }
+
+
 
 
     public StackPane getContentWrapper() {
