@@ -68,14 +68,9 @@ public abstract class PluginTemplate extends StackPane {
         setupMouseEvents();
     }
 
-
-
-
     public StackPane getContentWrapper() {
         return contentWrapper;
     }
-
-
 
     public void setContent(Node node) {
         contentWrapper.getChildren().setAll(node);
